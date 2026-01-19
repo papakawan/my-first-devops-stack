@@ -4,7 +4,7 @@ services:
     image: mariadb:10.6
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: password123
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: wordpress
     volumes:
       - db_data:/var/lib/mysql
@@ -20,7 +20,7 @@ services:
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: root
-      WORDPRESS_DB_PASSWORD: password123
+      WORDPRESS_DB_PASSWORD: ${DB_ROOT_PASSWORD}
       WORDPRESS_DB_NAME: wordpress
     volumes:
       - ./wp-content:/var/var/www/html/wp-content
@@ -35,7 +35,7 @@ services:
     environment:
       PMA_HOST: db
       PMA_USER: root
-      PMA_PASSWORD: password123
+      PMA_PASSWORD: ${DB_ROOT_PASSWORD}
     depends_on:
       - db
 
