@@ -18,7 +18,7 @@ jobs:
     needs: test
     runs-on: self-hosted
     steps:
-      - name: Pull and Update Docker
+      - name: Sync and Update
         run: |
           cd ~/my-first-stack
           git pull origin main
