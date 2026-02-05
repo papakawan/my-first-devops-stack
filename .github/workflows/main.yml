@@ -1,9 +1,3 @@
-name: Docker Compose Check and Deploy
-
-on:
-  push:
-    branches: [ "main" ]
-
 name: Advanced CD Pipeline
 
 on:
