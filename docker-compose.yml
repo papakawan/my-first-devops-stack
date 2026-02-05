@@ -1,5 +1,5 @@
 services:
-  # ตู้ที่ 1: ฐานข้อมูล
+  # ตู้ที่ 1: ฐานข้อมูล mariadb
   db:
     image: mariadb:10.6
     restart: always

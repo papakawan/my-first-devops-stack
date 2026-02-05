@@ -1,0 +1,2 @@
+2026/02/05 01:09:30 [alert] 222#222: 512 worker_connections are not enough
+2026/02/05 01:09:30 [error] 223#223: *1033 recv() failed (104: Connection reset by peer) while reading response header from upstream, client: 127.0.0.1, server: localhost-nginx-proxy-manager, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:80/favicon.ico", host: "my-portainer.local", referrer: "http://my-portainer.local/"

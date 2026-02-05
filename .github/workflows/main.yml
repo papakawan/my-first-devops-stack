@@ -4,22 +4,57 @@ on:
   push:
     branches: [ "main" ]
 
+name: Advanced CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
 jobs:
-  # งานที่ 1: ตรวจสอบความถูกต้อง
-  test:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Validate Docker Compose
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 1. ด่านตรวจ: ตรวจไวยากรณ์ไฟล์ Docker Compose
+      - name: Verify Docker Compose File
         run: docker compose config
 
-  # งานที่ 2: สั่งติดตั้ง
-  deploy:
-    needs: test
-    runs-on: self-hosted
-    steps:
-      - name: Sync and Update
-        run: |
-          cd ~/my-first-stack
-          git pull origin main
-          docker compose up -d
+      # 2. แจ้งเตือน Discord: เริ่มการ Deploy
+      - name: Discord Notification (Starting)
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: info
+          details: "🚀 เริ่มต้นการ Deploy โปรเจกต์ไปยัง Server..."
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
+      # 3. ขั้นตอนการ Deploy เดิมของคุณ (SSH เข้าไปลากโค้ดและรัน)
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~/my-first-stack
+            git pull origin main
+            docker compose up -d --build
+
+      # 4. แจ้งเตือน Discord: เมื่อสำเร็จ
+      - name: Discord Notification (Success)
+        if: success()
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: success
+          details: "✅ Deploy สำเร็จแล้ว! เว็บไซต์พร้อมใช้งาน"
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
+      # 5. แจ้งเตือน Discord: เมื่อพัง
+      - name: Discord Notification (Failure)
+        if: failure()
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: error
+          details: "❌ การ Deploy ล้มเหลว! กรุณาตรวจสอบ Log บน GitHub"
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
